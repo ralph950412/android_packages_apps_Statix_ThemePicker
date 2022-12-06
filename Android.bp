@@ -65,7 +65,7 @@ android_library {
         enabled: false,
     },
 
-    resource_dirs: ["res"],
+    resource_dirs: ["res", "res_override"],
 
     resource_zips: [":WallpaperPicker2_res", ":ThemePicker_res"],
 
