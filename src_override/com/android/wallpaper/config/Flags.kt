@@ -15,4 +15,8 @@
  */
 package com.android.wallpaper.config
 
-internal class Flags : BaseFlags()
+internal class Flags : BaseFlags() {
+    companion object {
+        @JvmField val enableClockCustomization: Boolean = false;
+    }
+}
