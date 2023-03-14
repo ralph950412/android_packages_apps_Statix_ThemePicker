@@ -49,17 +49,7 @@ genrule {
 
 android_library {
     name: "StatixThemePicker-core",
-
-    static_libs: [
-        "guava",
-        "monet",
-	"renderscript_toolkit",
-        "wallpaper-common-deps",
-        "SettingsLibSettingsTheme",
-        "SystemUIFlagsLib",
-        "SystemUI-statsd",
-        "styleprotoslite",
-    ],
+    defaults: ["ThemePicker_defaults"],
 
     optimize: {
         enabled: false,

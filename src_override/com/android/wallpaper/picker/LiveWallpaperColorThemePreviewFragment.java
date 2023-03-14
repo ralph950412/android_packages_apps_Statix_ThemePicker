@@ -10,6 +10,7 @@ import android.widget.RemoteViews;
 
 import com.android.wallpaper.R;
 import com.android.wallpaper.widget.LockScreenPreviewer;
+import com.android.wallpaper.util.PreviewUtils;
 
 import com.google.android.material.resources.MaterialAttributes;
 import com.google.android.material.tabs.TabLayout;
@@ -23,7 +24,11 @@ public class LiveWallpaperColorThemePreviewFragment extends LivePreviewFragment 
 
     @Override
     public WorkspaceSurfaceHolderCallback createWorkspaceSurfaceCallback(SurfaceView surfaceView) {
-        return new WorkspaceSurfaceHolderCallback(surfaceView, getContext(), mThemedIconSupported);
+        return new WorkspaceSurfaceHolderCallback(
+                surfaceView,
+                new PreviewUtils(
+                        getContext(), getString(R.string.grid_control_metadata_name)),
+                shouldApplyWallpaperColors());
     }
 
     @Override
