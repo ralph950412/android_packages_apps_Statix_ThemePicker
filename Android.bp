@@ -47,6 +47,18 @@ genrule {
         + "$(location soong_zip) -o $(out) -C $$RES_DIR -D $$RES_DIR"
 }
 
+genrule {
+    name: "StatixThemePicker_res_overrides",
+    tools: ["soong_zip"],
+    srcs: [
+        "res_override/**/*",
+    ],
+    out: ["ThemePicker_res_overrides.zip"],
+    cmd: "INPUTS=($(in)) && "
+        + "RES_DIR=$$(dirname $$(dirname $${INPUTS[0]})) && "
+        + "$(location soong_zip) -o $(out) -C $$RES_DIR -D $$RES_DIR"
+}
+
 android_library {
     name: "StatixThemePicker-core",
     defaults: ["ThemePicker_defaults"],
@@ -86,7 +98,7 @@ android_app {
 
     use_embedded_native_libs: true,
 
-    resource_zips: [":WallpaperPicker2_res", ":ThemePicker_res", ":StatixThemePicker_res"],
+    resource_zips: [":WallpaperPicker2_res", ":ThemePicker_res", ":StatixThemePicker_res", ":StatixThemePicker_res_overrides"],
 
     optimize: {
         enabled: false,
