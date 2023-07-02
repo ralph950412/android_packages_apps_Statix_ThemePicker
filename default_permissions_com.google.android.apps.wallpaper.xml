@@ -31,7 +31,7 @@
     or the app is considered a part of the OS.
 -->
 <exceptions>
-    <exception package="com.android.wallpaper">
+    <exception package="com.google.android.apps.wallpaper">
         <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="false"/>
     </exception>
 </exceptions>
