@@ -16,7 +16,7 @@
 package com.android.wallpaper.config
 
 internal class Flags : BaseFlags() {
-    companion object {
-        @JvmField val enableClockCustomization: Boolean = false;
-    }
+  companion object {
+    @JvmField val enableClockCustomization: Boolean = false
+  }
 }
