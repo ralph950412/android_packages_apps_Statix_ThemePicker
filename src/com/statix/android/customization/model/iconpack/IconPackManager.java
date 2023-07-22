@@ -20,10 +20,8 @@ import static com.android.customization.model.ResourceConstants.OVERLAY_CATEGORY
 import static com.android.customization.model.ResourceConstants.OVERLAY_CATEGORY_ICON_SYSUI;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -32,11 +30,10 @@ import androidx.annotation.Nullable;
 import com.android.customization.model.CustomizationManager;
 import com.android.customization.model.theme.OverlayManagerCompat;
 
-import java.util.Map;
-import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class IconPackManager implements CustomizationManager<IconPackOption> {
 
@@ -47,9 +44,15 @@ public class IconPackManager implements CustomizationManager<IconPackOption> {
     private IconPackOptionProvider mProvider;
     private static final String TAG = "IconPackManager";
     private static final String KEY_STATE_CURRENT_SELECTION = "IconPackManager.currentSelection";
-    private static final String[] mCurrentCategories = new String[]{OVERLAY_CATEGORY_ICON_ANDROID, OVERLAY_CATEGORY_ICON_SETTINGS, OVERLAY_CATEGORY_ICON_SYSUI};
+    private static final String[] mCurrentCategories =
+            new String[] {
+                OVERLAY_CATEGORY_ICON_ANDROID,
+                OVERLAY_CATEGORY_ICON_SETTINGS,
+                OVERLAY_CATEGORY_ICON_SYSUI
+            };
 
-    IconPackManager(Context context, OverlayManagerCompat overlayManager, IconPackOptionProvider provider) {
+    IconPackManager(
+            Context context, OverlayManagerCompat overlayManager, IconPackOptionProvider provider) {
         mContext = context;
         mProvider = provider;
         mOverlayManager = overlayManager;
@@ -63,7 +66,11 @@ public class IconPackManager implements CustomizationManager<IconPackOption> {
     @Override
     public void apply(IconPackOption option, @Nullable Callback callback) {
         if (!persistOverlay(option)) {
-            Toast failed = Toast.makeText(mContext, "Failed to apply icon pack, reboot to try again.", Toast.LENGTH_SHORT);
+            Toast failed =
+                    Toast.makeText(
+                            mContext,
+                            "Failed to apply icon pack, reboot to try again.",
+                            Toast.LENGTH_SHORT);
             failed.show();
             if (callback != null) {
                 callback.onError(null);
@@ -72,9 +79,17 @@ public class IconPackManager implements CustomizationManager<IconPackOption> {
         }
         if (option.isDefault()) {
             if (mActiveOption.isDefault()) return;
-            mActiveOption.getOverlayPackages().forEach((category, overlay) -> mOverlayManager.disableOverlay(overlay, UserHandle.myUserId()));
+            mActiveOption
+                    .getOverlayPackages()
+                    .forEach(
+                            (category, overlay) ->
+                                    mOverlayManager.disableOverlay(overlay, UserHandle.myUserId()));
         } else {
-            option.getOverlayPackages().forEach((category, overlay) -> mOverlayManager.setEnabledExclusiveInCategory(overlay, UserHandle.myUserId()));
+            option.getOverlayPackages()
+                    .forEach(
+                            (category, overlay) ->
+                                    mOverlayManager.setEnabledExclusiveInCategory(
+                                            overlay, UserHandle.myUserId()));
         }
         if (callback != null) {
             callback.onSuccess();
@@ -99,8 +114,11 @@ public class IconPackManager implements CustomizationManager<IconPackOption> {
     }
 
     private boolean persistOverlay(IconPackOption toPersist) {
-        String value = Settings.Secure.getStringForUser(mContext.getContentResolver(),
-                Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES, UserHandle.USER_CURRENT);
+        String value =
+                Settings.Secure.getStringForUser(
+                        mContext.getContentResolver(),
+                        Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES,
+                        UserHandle.USER_CURRENT);
         JSONObject json;
         if (value == null) {
             json = new JSONObject();
@@ -126,18 +144,24 @@ public class IconPackManager implements CustomizationManager<IconPackOption> {
             }
         }
         // updating the setting
-        Settings.Secure.putStringForUser(mContext.getContentResolver(),
+        Settings.Secure.putStringForUser(
+                mContext.getContentResolver(),
                 Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES,
-                json.toString(), UserHandle.USER_CURRENT);
+                json.toString(),
+                UserHandle.USER_CURRENT);
         return true;
     }
 
-    public static IconPackManager getInstance(Context context, OverlayManagerCompat overlayManager) {
+    public static IconPackManager getInstance(
+            Context context, OverlayManagerCompat overlayManager) {
         if (sIconPackOptionManager == null) {
             Context applicationContext = context.getApplicationContext();
-            sIconPackOptionManager = new IconPackManager(context, overlayManager, new IconPackOptionProvider(applicationContext, overlayManager));
+            sIconPackOptionManager =
+                    new IconPackManager(
+                            context,
+                            overlayManager,
+                            new IconPackOptionProvider(applicationContext, overlayManager));
         }
         return sIconPackOptionManager;
     }
-
 }

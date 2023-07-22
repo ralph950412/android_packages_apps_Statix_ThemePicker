@@ -20,7 +20,6 @@ import static com.android.wallpaper.widget.BottomActionBar.BottomAction.APPLY_TE
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -33,22 +32,18 @@ import com.android.customization.model.CustomizationManager.Callback;
 import com.android.customization.model.CustomizationManager.OptionsFetchedListener;
 import com.android.customization.model.CustomizationOption;
 import com.android.customization.model.theme.OverlayManagerCompat;
-import com.android.customization.module.ThemesUserEventLogger;
-import com.android.customization.picker.WallpaperPreviewer;
 import com.android.customization.widget.OptionSelectorController;
 import com.android.customization.widget.OptionSelectorController.CheckmarkStyle;
 import com.android.wallpaper.R;
 import com.android.wallpaper.picker.AppbarFragment;
 import com.android.wallpaper.widget.BottomActionBar;
 
-import com.statix.android.customization.model.iconpack.IconPackOption;
 import com.statix.android.customization.model.iconpack.IconPackManager;
+import com.statix.android.customization.model.iconpack.IconPackOption;
 
 import java.util.List;
 
-/**
- * Fragment that contains the UI for selecting and applying a IconPackOption.
- */
+/** Fragment that contains the UI for selecting and applying a IconPackOption. */
 public class IconPackFragment extends AppbarFragment {
 
     private static final String TAG = "IconPackFragment";
@@ -71,26 +66,29 @@ public class IconPackFragment extends AppbarFragment {
     private View mError;
     private BottomActionBar mBottomActionBar;
 
-    private final Callback mApplyIconPackCallback = new Callback() {
-        @Override
-        public void onSuccess() {
-        }
+    private final Callback mApplyIconPackCallback =
+            new Callback() {
+                @Override
+                public void onSuccess() {}
 
-        @Override
-        public void onError(@Nullable Throwable throwable) {
-            // Since we disabled it when clicked apply button.
-            mBottomActionBar.enableActions();
-            mBottomActionBar.hide();
-            //TODO(chihhangchuang): handle
-        }
-    };
+                @Override
+                public void onError(@Nullable Throwable throwable) {
+                    // Since we disabled it when clicked apply button.
+                    mBottomActionBar.enableActions();
+                    mBottomActionBar.hide();
+                    // TODO(chihhangchuang): handle
+                }
+            };
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(
-                R.layout.fragment_icon_pack_picker, container, /* attachToRoot */ false);
+        View view =
+                inflater.inflate(
+                        R.layout.fragment_icon_pack_picker, container, /* attachToRoot */ false);
         setUpToolbar(view);
         mContent = view.findViewById(R.id.content_section);
         mOptionsContainer = view.findViewById(R.id.options_container);
@@ -98,16 +96,18 @@ public class IconPackFragment extends AppbarFragment {
         mError = view.findViewById(R.id.error_section);
 
         // For nav bar edge-to-edge effect.
-        view.setOnApplyWindowInsetsListener((v, windowInsets) -> {
-            v.setPadding(
-                    v.getPaddingLeft(),
-                    windowInsets.getSystemWindowInsetTop(),
-                    v.getPaddingRight(),
-                    windowInsets.getSystemWindowInsetBottom());
-            return windowInsets.consumeSystemWindowInsets();
-        });
+        view.setOnApplyWindowInsetsListener(
+                (v, windowInsets) -> {
+                    v.setPadding(
+                            v.getPaddingLeft(),
+                            windowInsets.getSystemWindowInsetTop(),
+                            v.getPaddingRight(),
+                            windowInsets.getSystemWindowInsetBottom());
+                    return windowInsets.consumeSystemWindowInsets();
+                });
 
-        mIconPackManager = IconPackManager.getInstance(getContext(), new OverlayManagerCompat(getContext()));
+        mIconPackManager =
+                IconPackManager.getInstance(getContext(), new OverlayManagerCompat(getContext()));
         setUpOptions(savedInstanceState);
 
         return view;
@@ -126,7 +126,8 @@ public class IconPackFragment extends AppbarFragment {
         super.onBottomActionBarReady(bottomActionBar);
         mBottomActionBar = bottomActionBar;
         mBottomActionBar.showActionsOnly(APPLY_TEXT);
-        mBottomActionBar.setActionClickListener(APPLY_TEXT, v -> applyIconPackOption(mSelectedOption));
+        mBottomActionBar.setActionClickListener(
+                APPLY_TEXT, v -> applyIconPackOption(mSelectedOption));
     }
 
     private void applyIconPackOption(IconPackOption iconPackOption) {
@@ -137,32 +138,39 @@ public class IconPackFragment extends AppbarFragment {
     private void setUpOptions(@Nullable Bundle savedInstanceState) {
         hideError();
         mLoading.show();
-        mIconPackManager.fetchOptions(new OptionsFetchedListener<IconPackOption>() {
-            @Override
-            public void onOptionsLoaded(List<IconPackOption> options) {
-                mLoading.hide();
-                mOptionsController = new OptionSelectorController<>(
-                        mOptionsContainer, options, /* useGrid= */ false, CheckmarkStyle.CORNER);
-                mOptionsController.initOptions(mIconPackManager);
-                mSelectedOption = getActiveOption(options);
-                mOptionsController.setSelectedOption(mSelectedOption);
-                onOptionSelected(mSelectedOption);
-                restoreBottomActionBarVisibility(savedInstanceState);
+        mIconPackManager.fetchOptions(
+                new OptionsFetchedListener<IconPackOption>() {
+                    @Override
+                    public void onOptionsLoaded(List<IconPackOption> options) {
+                        mLoading.hide();
+                        mOptionsController =
+                                new OptionSelectorController<>(
+                                        mOptionsContainer,
+                                        options,
+                                        /* useGrid= */ false,
+                                        CheckmarkStyle.CORNER);
+                        mOptionsController.initOptions(mIconPackManager);
+                        mSelectedOption = getActiveOption(options);
+                        mOptionsController.setSelectedOption(mSelectedOption);
+                        onOptionSelected(mSelectedOption);
+                        restoreBottomActionBarVisibility(savedInstanceState);
 
-                mOptionsController.addListener(selectedOption -> {
-                    onOptionSelected(selectedOption);
-                    mBottomActionBar.show();
-                });
-            }
+                        mOptionsController.addListener(
+                                selectedOption -> {
+                                    onOptionSelected(selectedOption);
+                                    mBottomActionBar.show();
+                                });
+                    }
 
-            @Override
-            public void onError(@Nullable Throwable throwable) {
-                if (throwable != null) {
-                    Log.e(TAG, "Error loading iconpack options", throwable);
-                }
-                showError();
-            }
-        }, /*reload= */ true);
+                    @Override
+                    public void onError(@Nullable Throwable throwable) {
+                        if (throwable != null) {
+                            Log.e(TAG, "Error loading iconpack options", throwable);
+                        }
+                        showError();
+                    }
+                },
+                /* reload= */ true);
     }
 
     private IconPackOption getActiveOption(List<IconPackOption> options) {
@@ -194,8 +202,9 @@ public class IconPackFragment extends AppbarFragment {
     }
 
     private void restoreBottomActionBarVisibility(@Nullable Bundle savedInstanceState) {
-        boolean isBottomActionBarVisible = savedInstanceState != null
-                && savedInstanceState.getBoolean(KEY_STATE_BOTTOM_ACTION_BAR_VISIBLE);
+        boolean isBottomActionBarVisible =
+                savedInstanceState != null
+                        && savedInstanceState.getBoolean(KEY_STATE_BOTTOM_ACTION_BAR_VISIBLE);
         if (mBottomActionBar == null) return;
         if (isBottomActionBarVisible) {
             mBottomActionBar.show();

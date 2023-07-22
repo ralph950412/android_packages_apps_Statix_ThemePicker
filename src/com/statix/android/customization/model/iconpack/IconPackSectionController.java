@@ -19,20 +19,14 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.android.customization.model.CustomizationManager.Callback;
 import com.android.customization.model.CustomizationManager.OptionsFetchedListener;
-import com.android.customization.model.CustomizationOption;
-import com.android.customization.widget.OptionSelectorController;
-import com.android.customization.widget.OptionSelectorController.OptionSelectedListener;
-
 import com.android.wallpaper.R;
 import com.android.wallpaper.model.CustomizationSectionController;
-import com.android.wallpaper.util.LaunchUtils;
 
 import com.statix.android.customization.picker.iconpack.IconPackFragment;
 import com.statix.android.customization.picker.iconpack.IconPackSectionView;
@@ -40,24 +34,24 @@ import com.statix.android.customization.picker.iconpack.IconPackSectionView;
 import java.util.List;
 
 /** A {@link CustomizationSectionController} for system icons. */
-
-public class IconPackSectionController implements CustomizationSectionController<IconPackSectionView> {
+public class IconPackSectionController
+        implements CustomizationSectionController<IconPackSectionView> {
 
     private static final String TAG = "IconPackSectionController";
 
     private final IconPackManager mIconPackOptionsManager;
     private final CustomizationSectionNavigationController mSectionNavigationController;
-    private final Callback mApplyIconCallback = new Callback() {
-        @Override
-        public void onSuccess() {
-        }
+    private final Callback mApplyIconCallback =
+            new Callback() {
+                @Override
+                public void onSuccess() {}
 
-        @Override
-        public void onError(@Nullable Throwable throwable) {
-        }
-    };
+                @Override
+                public void onError(@Nullable Throwable throwable) {}
+            };
 
-    public IconPackSectionController(IconPackManager iconPackOptionsManager,
+    public IconPackSectionController(
+            IconPackManager iconPackOptionsManager,
             CustomizationSectionNavigationController sectionNavigationController) {
         mIconPackOptionsManager = iconPackOptionsManager;
         mSectionNavigationController = sectionNavigationController;
@@ -70,32 +64,40 @@ public class IconPackSectionController implements CustomizationSectionController
 
     @Override
     public IconPackSectionView createView(Context context) {
-        IconPackSectionView iconPackSectionView = (IconPackSectionView) LayoutInflater.from(context)
-                .inflate(R.layout.icon_section_view, /* root= */ null);
+        IconPackSectionView iconPackSectionView =
+                (IconPackSectionView)
+                        LayoutInflater.from(context)
+                                .inflate(R.layout.icon_section_view, /* root= */ null);
 
-        TextView sectionDescription = iconPackSectionView.findViewById(R.id.icon_section_description);
+        TextView sectionDescription =
+                iconPackSectionView.findViewById(R.id.icon_section_description);
         View sectionTile = iconPackSectionView.findViewById(R.id.icon_section_tile);
 
-        mIconPackOptionsManager.fetchOptions(new OptionsFetchedListener<IconPackOption>() {
-            @Override
-            public void onOptionsLoaded(List<IconPackOption> options) {
-                IconPackOption activeOption = getActiveOption(options);
-                sectionDescription.setText(activeOption.getTitle());
-                activeOption.bindThumbnailTile(sectionTile);
-            }
+        mIconPackOptionsManager.fetchOptions(
+                new OptionsFetchedListener<IconPackOption>() {
+                    @Override
+                    public void onOptionsLoaded(List<IconPackOption> options) {
+                        IconPackOption activeOption = getActiveOption(options);
+                        sectionDescription.setText(activeOption.getTitle());
+                        activeOption.bindThumbnailTile(sectionTile);
+                    }
 
-            @Override
-            public void onError(@Nullable Throwable throwable) {
-                if (throwable != null) {
-                    Log.e(TAG, "Error loading icon options", throwable);
-                }
-                sectionDescription.setText(R.string.something_went_wrong);
-                sectionTile.setVisibility(View.GONE);
-            }
-        }, /* reload= */ true);
+                    @Override
+                    public void onError(@Nullable Throwable throwable) {
+                        if (throwable != null) {
+                            Log.e(TAG, "Error loading icon options", throwable);
+                        }
+                        sectionDescription.setText(R.string.something_went_wrong);
+                        sectionTile.setVisibility(View.GONE);
+                    }
+                },
+                /* reload= */ true);
 
-        iconPackSectionView.setOnClickListener(v -> mSectionNavigationController.navigateTo(
-                IconPackFragment.newInstance(context.getString(R.string.icon_pack_title))));
+        iconPackSectionView.setOnClickListener(
+                v ->
+                        mSectionNavigationController.navigateTo(
+                                IconPackFragment.newInstance(
+                                        context.getString(R.string.icon_pack_title))));
 
         return iconPackSectionView;
     }

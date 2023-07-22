@@ -111,16 +111,16 @@ public final class StatixCustomizationSections implements CustomizationSections 
         sectionControllers.add(
                 mFlags.isCustomClocksEnabled(activity)
                         ? new PreviewWithClockCarouselSectionController(
-                        activity,
-                        lifecycleOwner,
-                        screen,
-                        wallpaperInfoFactory,
-                        wallpaperColorsViewModel,
-                        displayUtils,
-                        mClockCarouselViewModel,
-                        mClockViewFactory,
-                        sectionNavigationController,
-                        wallpaperInteractor)
+                                activity,
+                                lifecycleOwner,
+                                screen,
+                                wallpaperInfoFactory,
+                                wallpaperColorsViewModel,
+                                displayUtils,
+                                mClockCarouselViewModel,
+                                mClockViewFactory,
+                                sectionNavigationController,
+                                wallpaperInteractor)
                         : new ScreenPreviewSectionController(
                                 activity,
                                 lifecycleOwner,
@@ -135,9 +135,7 @@ public final class StatixCustomizationSections implements CustomizationSections 
                         // Theme color section.
                         new ColorSectionController2(
                                 sectionNavigationController,
-                                new ViewModelProvider(
-                                        activity,
-                                        mColorPickerViewModelFactory)
+                                new ViewModelProvider(activity, mColorPickerViewModelFactory)
                                         .get(ColorPickerViewModel.class),
                                 lifecycleOwner),
                         // Wallpaper quick switch section.
@@ -155,16 +153,15 @@ public final class StatixCustomizationSections implements CustomizationSections 
                                 sectionNavigationController,
                                 mKeyguardQuickAffordancePickerInteractor,
                                 new ViewModelProvider(
-                                        activity,
-                                        mKeyguardQuickAffordancePickerViewModelFactory)
+                                                activity,
+                                                mKeyguardQuickAffordancePickerViewModelFactory)
                                         .get(KeyguardQuickAffordancePickerViewModel.class),
                                 lifecycleOwner));
                 // Notifications section.
                 sectionControllers.add(
                         new NotificationSectionController(
                                 new ViewModelProvider(
-                                        activity,
-                                        mNotificationSectionViewModelFactory)
+                                                activity, mNotificationSectionViewModelFactory)
                                         .get(NotificationSectionViewModel.class),
                                 lifecycleOwner));
                 // More settings section.
@@ -188,12 +185,16 @@ public final class StatixCustomizationSections implements CustomizationSections 
                 break;
         }
         // Icon pack selection section.
-        sectionControllers.add(new IconPackSectionController(
-                IconPackManager.getInstance(activity, new OverlayManagerCompat(activity)), sectionNavigationController));
+        sectionControllers.add(
+                new IconPackSectionController(
+                        IconPackManager.getInstance(activity, new OverlayManagerCompat(activity)),
+                        sectionNavigationController));
 
         // Font selection section.
-        sectionControllers.add(new FontSectionController(
-                FontManager.getInstance(activity, new OverlayManagerCompat(activity)), sectionNavigationController));
+        sectionControllers.add(
+                new FontSectionController(
+                        FontManager.getInstance(activity, new OverlayManagerCompat(activity)),
+                        sectionNavigationController));
         return sectionControllers;
     }
 
@@ -212,32 +213,33 @@ public final class StatixCustomizationSections implements CustomizationSections 
         // Wallpaper section.
         sectionControllers.add(
                 new WallpaperSectionController(
-                activity,
-                lifecycleOwner,
-                permissionRequester,
-                wallpaperColorsViewModel,
-                mThemedIconInteractor.isActivatedAsLiveData(),
-                sectionNavigationController,
-                wallpaperPreviewNavigator,
-                savedInstanceState,
-                displayUtils));
+                        activity,
+                        lifecycleOwner,
+                        permissionRequester,
+                        wallpaperColorsViewModel,
+                        mThemedIconInteractor.isActivatedAsLiveData(),
+                        sectionNavigationController,
+                        wallpaperPreviewNavigator,
+                        savedInstanceState,
+                        displayUtils));
 
         // Theme color section.
-        sectionControllers.add(new ColorSectionController(
-                activity, wallpaperColorsViewModel, lifecycleOwner, savedInstanceState));
+        sectionControllers.add(
+                new ColorSectionController(
+                        activity, wallpaperColorsViewModel, lifecycleOwner, savedInstanceState));
 
         // Dark/Light theme section.
-        sectionControllers.add(new DarkModeSectionController(
-                activity,
-                lifecycleOwner.getLifecycle(),
-                mDarkModeSnapshotRestorer));
+        sectionControllers.add(
+                new DarkModeSectionController(
+                        activity, lifecycleOwner.getLifecycle(), mDarkModeSnapshotRestorer));
 
         // Themed app icon section.
-        sectionControllers.add(new ThemedIconSectionController(
-                ThemedIconSwitchProvider.getInstance(activity),
-                mThemedIconInteractor,
-                savedInstanceState,
-                mThemedIconSnapshotRestorer));
+        sectionControllers.add(
+                new ThemedIconSectionController(
+                        ThemedIconSwitchProvider.getInstance(activity),
+                        mThemedIconInteractor,
+                        savedInstanceState,
+                        mThemedIconSnapshotRestorer));
 
         // App grid section.
         sectionControllers.add(
@@ -253,18 +255,21 @@ public final class StatixCustomizationSections implements CustomizationSections 
                         sectionNavigationController,
                         mKeyguardQuickAffordancePickerInteractor,
                         new ViewModelProvider(
-                                activity,
-                                mKeyguardQuickAffordancePickerViewModelFactory)
+                                        activity, mKeyguardQuickAffordancePickerViewModelFactory)
                                 .get(KeyguardQuickAffordancePickerViewModel.class),
                         lifecycleOwner));
 
         // Icon pack selection section.
-        sectionControllers.add(new IconPackSectionController(
-                IconPackManager.getInstance(activity, new OverlayManagerCompat(activity)), sectionNavigationController));
+        sectionControllers.add(
+                new IconPackSectionController(
+                        IconPackManager.getInstance(activity, new OverlayManagerCompat(activity)),
+                        sectionNavigationController));
 
         // Font selection section.
-        sectionControllers.add(new FontSectionController(
-                FontManager.getInstance(activity, new OverlayManagerCompat(activity)), sectionNavigationController));
+        sectionControllers.add(
+                new FontSectionController(
+                        FontManager.getInstance(activity, new OverlayManagerCompat(activity)),
+                        sectionNavigationController));
 
         return sectionControllers;
     }

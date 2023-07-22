@@ -6,18 +6,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
-import android.widget.RemoteViews;
 
+import com.android.customization.model.color.WallpaperColorResources;
 import com.android.wallpaper.R;
-import com.android.wallpaper.widget.LockScreenPreviewer;
 import com.android.wallpaper.util.PreviewUtils;
+import com.android.wallpaper.widget.LockScreenPreviewer;
 
 import com.google.android.material.resources.MaterialAttributes;
 import com.google.android.material.tabs.TabLayout;
 
-import com.android.customization.model.color.WallpaperColorResources;
-
-public class LiveWallpaperColorThemePreviewFragment extends LivePreviewFragment implements WallpaperColorThemePreview {
+public class LiveWallpaperColorThemePreviewFragment extends LivePreviewFragment
+        implements WallpaperColorThemePreview {
     private boolean mIgnoreInitialColorChange;
     private boolean mThemedIconSupported;
     private WallpaperColors mWallpaperColors;
@@ -26,8 +25,7 @@ public class LiveWallpaperColorThemePreviewFragment extends LivePreviewFragment 
     public WorkspaceSurfaceHolderCallback createWorkspaceSurfaceCallback(SurfaceView surfaceView) {
         return new WorkspaceSurfaceHolderCallback(
                 surfaceView,
-                new PreviewUtils(
-                        getContext(), getString(R.string.grid_control_metadata_name)),
+                new PreviewUtils(getContext(), getString(R.string.grid_control_metadata_name)),
                 shouldApplyWallpaperColors());
     }
 
@@ -55,24 +53,35 @@ public class LiveWallpaperColorThemePreviewFragment extends LivePreviewFragment 
             Context context = getContext();
             new WallpaperColorResources(wallpaperColors).apply(context);
             updateSystemBarColor(context);
-            getView().setBackgroundColor(MaterialAttributes.resolveOrThrow(context, android.R.attr.colorPrimary, "android.R.attr.colorPrimary is not set in the current theme"));
+            getView()
+                    .setBackgroundColor(
+                            MaterialAttributes.resolveOrThrow(
+                                    context,
+                                    android.R.attr.colorPrimary,
+                                    "android.R.attr.colorPrimary is not set in the current theme"));
             LayoutInflater from = LayoutInflater.from(context);
             ViewGroup viewGroup = (ViewGroup) getView().findViewById(R.id.section_header_container);
             viewGroup.removeAllViews();
             setUpToolbar(from.inflate(R.layout.section_header, viewGroup), true);
             mFullScreenAnimation.ensureToolbarIsCorrectlyLocated();
             mFullScreenAnimation.ensureToolbarIsCorrectlyColored();
-            ViewGroup viewGroup2 = (ViewGroup) getView().findViewById(R.id.fullscreen_buttons_container);
+            ViewGroup viewGroup2 =
+                    (ViewGroup) getView().findViewById(R.id.fullscreen_buttons_container);
             viewGroup2.removeAllViews();
             setFullScreenActions(from.inflate(R.layout.fullscreen_buttons, viewGroup2));
             ((PreviewFragment) this).mBottomActionBar.setColor(from.getContext());
             updateWorkspacePreview(mWorkspaceSurface, mWorkspaceSurfaceCallback, wallpaperColors);
-            ViewGroup viewGroup3 = (ViewGroup) getView().findViewById(R.id.separated_tabs_container);
+            ViewGroup viewGroup3 =
+                    (ViewGroup) getView().findViewById(R.id.separated_tabs_container);
             viewGroup3.removeAllViews();
-            setUpTabs((TabLayout) from.inflate(R.layout.separated_tabs, viewGroup3).findViewById(R.id.separated_tabs));
+            setUpTabs(
+                    (TabLayout)
+                            from.inflate(R.layout.separated_tabs, viewGroup3)
+                                    .findViewById(R.id.separated_tabs));
             mLockScreenPreviewer.release();
             mLockPreviewContainer.removeAllViews();
-            LockScreenPreviewer lockScreenPreviewer = new LockScreenPreviewer(getLifecycle(), context, mLockPreviewContainer);
+            LockScreenPreviewer lockScreenPreviewer =
+                    new LockScreenPreviewer(getLifecycle(), context, mLockPreviewContainer);
             mLockScreenPreviewer = lockScreenPreviewer;
             lockScreenPreviewer.setDateViewVisibility(!mFullScreenAnimation.isFullScreen());
         }

@@ -19,10 +19,8 @@ import static com.android.customization.model.ResourceConstants.ANDROID_PACKAGE;
 import static com.android.customization.model.ResourceConstants.OVERLAY_CATEGORY_FONT;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.os.UserHandle;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,11 +29,10 @@ import androidx.annotation.Nullable;
 import com.android.customization.model.CustomizationManager;
 import com.android.customization.model.theme.OverlayManagerCompat;
 
-import java.util.Map;
-import java.util.List;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 public class FontManager implements CustomizationManager<FontOption> {
 
@@ -61,7 +58,11 @@ public class FontManager implements CustomizationManager<FontOption> {
     @Override
     public void apply(FontOption option, @Nullable Callback callback) {
         if (!persistOverlay(option)) {
-            Toast failed = Toast.makeText(mContext, "Failed to apply font, reboot to try again.", Toast.LENGTH_SHORT);
+            Toast failed =
+                    Toast.makeText(
+                            mContext,
+                            "Failed to apply font, reboot to try again.",
+                            Toast.LENGTH_SHORT);
             failed.show();
             if (callback != null) {
                 callback.onError(null);
@@ -70,12 +71,14 @@ public class FontManager implements CustomizationManager<FontOption> {
         }
         if (option.getPackageName() == null) {
             if (mActiveOption.getPackageName() == null) return;
-            for (String overlay : mOverlayManager.getOverlayPackagesForCategory(
-                    OVERLAY_CATEGORY_FONT, UserHandle.myUserId(), ANDROID_PACKAGE)) {
+            for (String overlay :
+                    mOverlayManager.getOverlayPackagesForCategory(
+                            OVERLAY_CATEGORY_FONT, UserHandle.myUserId(), ANDROID_PACKAGE)) {
                 mOverlayManager.disableOverlay(overlay, UserHandle.myUserId());
             }
         } else {
-            mOverlayManager.setEnabledExclusiveInCategory(option.getPackageName(), UserHandle.myUserId());
+            mOverlayManager.setEnabledExclusiveInCategory(
+                    option.getPackageName(), UserHandle.myUserId());
         }
         if (callback != null) {
             callback.onSuccess();
@@ -100,7 +103,8 @@ public class FontManager implements CustomizationManager<FontOption> {
     }
 
     public boolean isActive(FontOption option) {
-        String enabledPkg = mOverlayManager.getEnabledPackageName(ANDROID_PACKAGE, OVERLAY_CATEGORY_FONT);
+        String enabledPkg =
+                mOverlayManager.getEnabledPackageName(ANDROID_PACKAGE, OVERLAY_CATEGORY_FONT);
         if (enabledPkg != null) {
             return enabledPkg.equals(option.getPackageName());
         } else {
@@ -109,8 +113,11 @@ public class FontManager implements CustomizationManager<FontOption> {
     }
 
     private boolean persistOverlay(FontOption toPersist) {
-        String value = Settings.Secure.getStringForUser(mContext.getContentResolver(),
-                Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES, UserHandle.USER_CURRENT);
+        String value =
+                Settings.Secure.getStringForUser(
+                        mContext.getContentResolver(),
+                        Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES,
+                        UserHandle.USER_CURRENT);
         JSONObject json;
         if (value == null) {
             json = new JSONObject();
@@ -132,18 +139,23 @@ public class FontManager implements CustomizationManager<FontOption> {
             return false;
         }
         // updating the setting
-        Settings.Secure.putStringForUser(mContext.getContentResolver(),
+        Settings.Secure.putStringForUser(
+                mContext.getContentResolver(),
                 Settings.Secure.THEME_CUSTOMIZATION_OVERLAY_PACKAGES,
-                json.toString(), UserHandle.USER_CURRENT);
+                json.toString(),
+                UserHandle.USER_CURRENT);
         return true;
     }
 
     public static FontManager getInstance(Context context, OverlayManagerCompat overlayManager) {
         if (sFontOptionManager == null) {
             Context applicationContext = context.getApplicationContext();
-            sFontOptionManager = new FontManager(context, overlayManager, new FontOptionProvider(applicationContext, overlayManager));
+            sFontOptionManager =
+                    new FontManager(
+                            context,
+                            overlayManager,
+                            new FontOptionProvider(applicationContext, overlayManager));
         }
         return sFontOptionManager;
     }
-
 }

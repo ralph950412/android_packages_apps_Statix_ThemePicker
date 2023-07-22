@@ -30,7 +30,6 @@ import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 import android.util.Log;
 
-import com.android.customization.model.ResourceConstants;
 import com.android.customization.model.theme.OverlayManagerCompat;
 import com.android.wallpaper.R;
 
@@ -54,13 +53,18 @@ public class IconPackOptionProvider {
         mContext = context;
         mPm = context.getPackageManager();
         String[] targetPackages = IconPackOption.OVERLAY_PACKAGES;
-        mSysUiIconsOverlayPackages.addAll(manager.getOverlayPackagesForCategory(
-                OVERLAY_CATEGORY_ICON_SYSUI, UserHandle.myUserId(), targetPackages));
-        mSettingsIconsOverlayPackages.addAll(manager.getOverlayPackagesForCategory(
-                OVERLAY_CATEGORY_ICON_SETTINGS, UserHandle.myUserId(), targetPackages));
+        mSysUiIconsOverlayPackages.addAll(
+                manager.getOverlayPackagesForCategory(
+                        OVERLAY_CATEGORY_ICON_SYSUI, UserHandle.myUserId(), targetPackages));
+        mSettingsIconsOverlayPackages.addAll(
+                manager.getOverlayPackagesForCategory(
+                        OVERLAY_CATEGORY_ICON_SETTINGS, UserHandle.myUserId(), targetPackages));
         mOverlayPackages = new ArrayList<>();
-        mOverlayPackages.addAll(manager.getOverlayPackagesForCategory(OVERLAY_CATEGORY_ICON_ANDROID,
-                UserHandle.myUserId(), IconPackOption.OVERLAY_PACKAGES));
+        mOverlayPackages.addAll(
+                manager.getOverlayPackagesForCategory(
+                        OVERLAY_CATEGORY_ICON_ANDROID,
+                        UserHandle.myUserId(),
+                        IconPackOption.OVERLAY_PACKAGES));
     }
 
     public List<IconPackOption> getOptions() {
@@ -73,15 +77,20 @@ public class IconPackOptionProvider {
 
         Map<String, IconPackOption> optionsByPrefix = new HashMap<>();
         for (String overlayPackage : mOverlayPackages) {
-            IconPackOption option = addOrUpdateOption(optionsByPrefix, overlayPackage,
-                    OVERLAY_CATEGORY_ICON_ANDROID);
-            try{
+            IconPackOption option =
+                    addOrUpdateOption(
+                            optionsByPrefix, overlayPackage, OVERLAY_CATEGORY_ICON_ANDROID);
+            try {
                 for (String iconName : ICONS_FOR_PREVIEW) {
                     option.addIcon(loadIconPreviewDrawable(iconName, overlayPackage));
                 }
             } catch (NotFoundException | NameNotFoundException e) {
-                Log.w(TAG, String.format("Couldn't load icon overlay details for %s, will skip it",
-                        overlayPackage), e);
+                Log.w(
+                        TAG,
+                        String.format(
+                                "Couldn't load icon overlay details for %s, will skip it",
+                                overlayPackage),
+                        e);
             }
         }
 
@@ -100,13 +109,17 @@ public class IconPackOptionProvider {
         }
     }
 
-    private IconPackOption addOrUpdateOption(Map<String, IconPackOption> optionsByPrefix,
-            String overlayPackage, String category) {
+    private IconPackOption addOrUpdateOption(
+            Map<String, IconPackOption> optionsByPrefix, String overlayPackage, String category) {
         String prefix = overlayPackage.substring(0, overlayPackage.lastIndexOf("."));
         IconPackOption option = null;
         try {
             if (!optionsByPrefix.containsKey(prefix)) {
-                option = new IconPackOption(mPm.getApplicationInfo(overlayPackage, 0).loadLabel(mPm).toString());
+                option =
+                        new IconPackOption(
+                                mPm.getApplicationInfo(overlayPackage, 0)
+                                        .loadLabel(mPm)
+                                        .toString());
                 optionsByPrefix.put(prefix, option);
             } else {
                 option = optionsByPrefix.get(prefix);
@@ -120,15 +133,17 @@ public class IconPackOptionProvider {
 
     private Drawable loadIconPreviewDrawable(String drawableName, String packageName)
             throws NameNotFoundException, NotFoundException {
-        final Resources resources = ANDROID_PACKAGE.equals(packageName)
-                ? Resources.getSystem()
-                : mPm.getResourcesForApplication(packageName);
+        final Resources resources =
+                ANDROID_PACKAGE.equals(packageName)
+                        ? Resources.getSystem()
+                        : mPm.getResourcesForApplication(packageName);
         return resources.getDrawable(
                 resources.getIdentifier(drawableName, "drawable", packageName), null);
     }
 
     private void addDefault() {
-        IconPackOption option = new IconPackOption(mContext.getString(R.string.default_theme_title), true);
+        IconPackOption option =
+                new IconPackOption(mContext.getString(R.string.default_theme_title), true);
         try {
             for (String iconName : ICONS_FOR_PREVIEW) {
                 option.addIcon(loadIconPreviewDrawable(iconName, ANDROID_PACKAGE));
@@ -141,5 +156,4 @@ public class IconPackOptionProvider {
         option.addOverlayPackage(OVERLAY_CATEGORY_ICON_SETTINGS, null);
         mOptions.add(option);
     }
-
 }

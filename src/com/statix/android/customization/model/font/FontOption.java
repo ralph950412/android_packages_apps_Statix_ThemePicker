@@ -15,29 +15,17 @@
  */
 package com.statix.android.customization.model.font;
 
-import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.android.wallpaper.R;
-import com.android.wallpaper.util.ResourceUtils;
 
 import com.android.customization.model.CustomizationManager;
 import com.android.customization.model.CustomizationOption;
-import com.android.customization.model.ResourceConstants;
-import com.android.customization.model.theme.OverlayManagerCompat;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import com.android.wallpaper.R;
+import com.android.wallpaper.util.ResourceUtils;
 
 public class FontOption implements CustomizationOption<FontOption> {
 
@@ -46,7 +34,8 @@ public class FontOption implements CustomizationOption<FontOption> {
     private String mTitle;
     private String mOverlayPackage;
 
-    public FontOption(String overlayPackage, String label, Typeface headlineFont, Typeface bodyFont) {
+    public FontOption(
+            String overlayPackage, String label, Typeface headlineFont, Typeface bodyFont) {
         mTitle = label;
         mHeadlineFont = headlineFont;
         mBodyFont = bodyFont;
@@ -56,12 +45,13 @@ public class FontOption implements CustomizationOption<FontOption> {
     @Override
     public void bindThumbnailTile(View view) {
         Resources res = view.getContext().getResources();
-        ((TextView) view.findViewById(R.id.thumbnail_text)).setTypeface(
-                mHeadlineFont);
-        int colorFilter = ResourceUtils.getColorAttr(view.getContext(),
-                view.isActivated() || view.getId() == R.id.font_section_tile
-                        ? android.R.attr.textColorPrimary
-                        : android.R.attr.textColorTertiary);
+        ((TextView) view.findViewById(R.id.thumbnail_text)).setTypeface(mHeadlineFont);
+        int colorFilter =
+                ResourceUtils.getColorAttr(
+                        view.getContext(),
+                        view.isActivated() || view.getId() == R.id.font_section_tile
+                                ? android.R.attr.textColorPrimary
+                                : android.R.attr.textColorTertiary);
         ((TextView) view.findViewById(R.id.thumbnail_text)).setTextColor(colorFilter);
         view.setContentDescription(mTitle);
     }
@@ -89,14 +79,15 @@ public class FontOption implements CustomizationOption<FontOption> {
     public void bindPreview(ViewGroup container) {
         ViewGroup cardBody = container.findViewById(R.id.theme_preview_card_body_container);
         if (cardBody.getChildCount() == 0) {
-            LayoutInflater.from(container.getContext()).inflate(
-                    R.layout.preview_card_font_content, cardBody, true);
+            LayoutInflater.from(container.getContext())
+                    .inflate(R.layout.preview_card_font_content, cardBody, true);
         }
         TextView title = container.findViewById(R.id.font_card_title);
         title.setTypeface(mHeadlineFont);
         TextView bodyText = container.findViewById(R.id.font_card_body);
         bodyText.setTypeface(mBodyFont);
-        container.findViewById(R.id.font_card_divider).setBackgroundColor(
-                title.getCurrentTextColor());
+        container
+                .findViewById(R.id.font_card_divider)
+                .setBackgroundColor(title.getCurrentTextColor());
     }
 }

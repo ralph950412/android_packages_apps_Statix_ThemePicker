@@ -22,8 +22,12 @@ import com.android.wallpaper.model.WallpaperInfo;
 
 public abstract class MonetPreviewFragment extends PreviewFragment {
 
-    public static PreviewFragment newInstance(WallpaperInfo wallpaperInfo, @PreviewMode int mode,
-            boolean viewAsHome, boolean viewFullScreen, boolean testingModeEnabled) {
+    public static PreviewFragment newInstance(
+            WallpaperInfo wallpaperInfo,
+            @PreviewMode int mode,
+            boolean viewAsHome,
+            boolean viewFullScreen,
+            boolean testingModeEnabled) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_WALLPAPER, wallpaperInfo);
         args.putInt(ARG_PREVIEW_MODE, mode);
@@ -31,10 +35,11 @@ public abstract class MonetPreviewFragment extends PreviewFragment {
         args.putBoolean(ARG_FULL_SCREEN, viewFullScreen);
         args.putBoolean(ARG_TESTING_MODE_ENABLED, testingModeEnabled);
 
-        PreviewFragment fragment = wallpaperInfo instanceof LiveWallpaperInfo
-                ? new LiveWallpaperColorThemePreviewFragment() : new ImageWallpaperColorThemePreviewFragment();
+        PreviewFragment fragment =
+                wallpaperInfo instanceof LiveWallpaperInfo
+                        ? new LiveWallpaperColorThemePreviewFragment()
+                        : new ImageWallpaperColorThemePreviewFragment();
         fragment.setArguments(args);
         return fragment;
     }
-
 }

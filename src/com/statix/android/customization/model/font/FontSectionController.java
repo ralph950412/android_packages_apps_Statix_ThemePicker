@@ -19,20 +19,14 @@ import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.android.customization.model.CustomizationManager.Callback;
 import com.android.customization.model.CustomizationManager.OptionsFetchedListener;
-import com.android.customization.model.CustomizationOption;
-import com.android.customization.widget.OptionSelectorController;
-import com.android.customization.widget.OptionSelectorController.OptionSelectedListener;
-
 import com.android.wallpaper.R;
 import com.android.wallpaper.model.CustomizationSectionController;
-import com.android.wallpaper.util.LaunchUtils;
 
 import com.statix.android.customization.picker.font.FontFragment;
 import com.statix.android.customization.picker.font.FontSectionView;
@@ -40,24 +34,23 @@ import com.statix.android.customization.picker.font.FontSectionView;
 import java.util.List;
 
 /** A {@link CustomizationSectionController} for system fonts. */
-
 public class FontSectionController implements CustomizationSectionController<FontSectionView> {
 
     private static final String TAG = "FontSectionController";
 
     private final FontManager mFontOptionsManager;
     private final CustomizationSectionNavigationController mSectionNavigationController;
-    private final Callback mApplyFontCallback = new Callback() {
-        @Override
-        public void onSuccess() {
-        }
+    private final Callback mApplyFontCallback =
+            new Callback() {
+                @Override
+                public void onSuccess() {}
 
-        @Override
-        public void onError(@Nullable Throwable throwable) {
-        }
-    };
+                @Override
+                public void onError(@Nullable Throwable throwable) {}
+            };
 
-    public FontSectionController(FontManager fontOptionsManager,
+    public FontSectionController(
+            FontManager fontOptionsManager,
             CustomizationSectionNavigationController sectionNavigationController) {
         mFontOptionsManager = fontOptionsManager;
         mSectionNavigationController = sectionNavigationController;
@@ -70,32 +63,38 @@ public class FontSectionController implements CustomizationSectionController<Fon
 
     @Override
     public FontSectionView createView(Context context) {
-        FontSectionView fontSectionView = (FontSectionView) LayoutInflater.from(context)
-                .inflate(R.layout.font_section_view, /* root= */ null);
+        FontSectionView fontSectionView =
+                (FontSectionView)
+                        LayoutInflater.from(context)
+                                .inflate(R.layout.font_section_view, /* root= */ null);
 
         TextView sectionDescription = fontSectionView.findViewById(R.id.font_section_description);
         View sectionTile = fontSectionView.findViewById(R.id.font_section_tile);
 
-        mFontOptionsManager.fetchOptions(new OptionsFetchedListener<FontOption>() {
-            @Override
-            public void onOptionsLoaded(List<FontOption> options) {
-                FontOption activeOption = getActiveOption(options);
-                sectionDescription.setText(activeOption.getTitle());
-                activeOption.bindThumbnailTile(sectionTile);
-            }
+        mFontOptionsManager.fetchOptions(
+                new OptionsFetchedListener<FontOption>() {
+                    @Override
+                    public void onOptionsLoaded(List<FontOption> options) {
+                        FontOption activeOption = getActiveOption(options);
+                        sectionDescription.setText(activeOption.getTitle());
+                        activeOption.bindThumbnailTile(sectionTile);
+                    }
 
-            @Override
-            public void onError(@Nullable Throwable throwable) {
-                if (throwable != null) {
-                    Log.e(TAG, "Error loading font options", throwable);
-                }
-                sectionDescription.setText(R.string.something_went_wrong);
-                sectionTile.setVisibility(View.GONE);
-            }
-        }, /* reload= */ true);
+                    @Override
+                    public void onError(@Nullable Throwable throwable) {
+                        if (throwable != null) {
+                            Log.e(TAG, "Error loading font options", throwable);
+                        }
+                        sectionDescription.setText(R.string.something_went_wrong);
+                        sectionTile.setVisibility(View.GONE);
+                    }
+                },
+                /* reload= */ true);
 
-        fontSectionView.setOnClickListener(v -> mSectionNavigationController.navigateTo(
-                FontFragment.newInstance(context.getString(R.string.font_title))));
+        fontSectionView.setOnClickListener(
+                v ->
+                        mSectionNavigationController.navigateTo(
+                                FontFragment.newInstance(context.getString(R.string.font_title))));
 
         return fontSectionView;
     }

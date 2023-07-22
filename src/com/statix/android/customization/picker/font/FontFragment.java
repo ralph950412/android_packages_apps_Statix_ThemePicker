@@ -20,7 +20,6 @@ import static com.android.wallpaper.widget.BottomActionBar.BottomAction.APPLY_TE
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -33,22 +32,18 @@ import com.android.customization.model.CustomizationManager.Callback;
 import com.android.customization.model.CustomizationManager.OptionsFetchedListener;
 import com.android.customization.model.CustomizationOption;
 import com.android.customization.model.theme.OverlayManagerCompat;
-import com.android.customization.module.ThemesUserEventLogger;
-import com.android.customization.picker.WallpaperPreviewer;
 import com.android.customization.widget.OptionSelectorController;
 import com.android.customization.widget.OptionSelectorController.CheckmarkStyle;
 import com.android.wallpaper.R;
 import com.android.wallpaper.picker.AppbarFragment;
 import com.android.wallpaper.widget.BottomActionBar;
 
-import com.statix.android.customization.model.font.FontOption;
 import com.statix.android.customization.model.font.FontManager;
+import com.statix.android.customization.model.font.FontOption;
 
 import java.util.List;
 
-/**
- * Fragment that contains the UI for selecting and applying a FontOption.
- */
+/** Fragment that contains the UI for selecting and applying a FontOption. */
 public class FontFragment extends AppbarFragment {
 
     private static final String TAG = "FontFragment";
@@ -71,26 +66,29 @@ public class FontFragment extends AppbarFragment {
     private View mError;
     private BottomActionBar mBottomActionBar;
 
-    private final Callback mApplyFontCallback = new Callback() {
-        @Override
-        public void onSuccess() {
-        }
+    private final Callback mApplyFontCallback =
+            new Callback() {
+                @Override
+                public void onSuccess() {}
 
-        @Override
-        public void onError(@Nullable Throwable throwable) {
-            // Since we disabled it when clicked apply button.
-            mBottomActionBar.enableActions();
-            mBottomActionBar.hide();
-            //TODO(chihhangchuang): handle
-        }
-    };
+                @Override
+                public void onError(@Nullable Throwable throwable) {
+                    // Since we disabled it when clicked apply button.
+                    mBottomActionBar.enableActions();
+                    mBottomActionBar.hide();
+                    // TODO(chihhangchuang): handle
+                }
+            };
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(
-                R.layout.fragment_font_picker, container, /* attachToRoot */ false);
+        View view =
+                inflater.inflate(
+                        R.layout.fragment_font_picker, container, /* attachToRoot */ false);
         setUpToolbar(view);
         mContent = view.findViewById(R.id.content_section);
         mOptionsContainer = view.findViewById(R.id.options_container);
@@ -98,16 +96,18 @@ public class FontFragment extends AppbarFragment {
         mError = view.findViewById(R.id.error_section);
 
         // For nav bar edge-to-edge effect.
-        view.setOnApplyWindowInsetsListener((v, windowInsets) -> {
-            v.setPadding(
-                    v.getPaddingLeft(),
-                    windowInsets.getSystemWindowInsetTop(),
-                    v.getPaddingRight(),
-                    windowInsets.getSystemWindowInsetBottom());
-            return windowInsets.consumeSystemWindowInsets();
-        });
+        view.setOnApplyWindowInsetsListener(
+                (v, windowInsets) -> {
+                    v.setPadding(
+                            v.getPaddingLeft(),
+                            windowInsets.getSystemWindowInsetTop(),
+                            v.getPaddingRight(),
+                            windowInsets.getSystemWindowInsetBottom());
+                    return windowInsets.consumeSystemWindowInsets();
+                });
 
-        mFontManager = FontManager.getInstance(getContext(), new OverlayManagerCompat(getContext()));
+        mFontManager =
+                FontManager.getInstance(getContext(), new OverlayManagerCompat(getContext()));
         setUpOptions(savedInstanceState);
 
         return view;
@@ -137,32 +137,39 @@ public class FontFragment extends AppbarFragment {
     private void setUpOptions(@Nullable Bundle savedInstanceState) {
         hideError();
         mLoading.show();
-        mFontManager.fetchOptions(new OptionsFetchedListener<FontOption>() {
-            @Override
-            public void onOptionsLoaded(List<FontOption> options) {
-                mLoading.hide();
-                mOptionsController = new OptionSelectorController<>(
-                        mOptionsContainer, options, /* useGrid= */ false, CheckmarkStyle.CORNER);
-                mOptionsController.initOptions(mFontManager);
-                mSelectedOption = getActiveOption(options);
-                mOptionsController.setSelectedOption(mSelectedOption);
-                onOptionSelected(mSelectedOption);
-                restoreBottomActionBarVisibility(savedInstanceState);
+        mFontManager.fetchOptions(
+                new OptionsFetchedListener<FontOption>() {
+                    @Override
+                    public void onOptionsLoaded(List<FontOption> options) {
+                        mLoading.hide();
+                        mOptionsController =
+                                new OptionSelectorController<>(
+                                        mOptionsContainer,
+                                        options,
+                                        /* useGrid= */ false,
+                                        CheckmarkStyle.CORNER);
+                        mOptionsController.initOptions(mFontManager);
+                        mSelectedOption = getActiveOption(options);
+                        mOptionsController.setSelectedOption(mSelectedOption);
+                        onOptionSelected(mSelectedOption);
+                        restoreBottomActionBarVisibility(savedInstanceState);
 
-                mOptionsController.addListener(selectedOption -> {
-                    onOptionSelected(selectedOption);
-                    mBottomActionBar.show();
-                });
-            }
+                        mOptionsController.addListener(
+                                selectedOption -> {
+                                    onOptionSelected(selectedOption);
+                                    mBottomActionBar.show();
+                                });
+                    }
 
-            @Override
-            public void onError(@Nullable Throwable throwable) {
-                if (throwable != null) {
-                    Log.e(TAG, "Error loading Font options", throwable);
-                }
-                showError();
-            }
-        }, /*reload= */ true);
+                    @Override
+                    public void onError(@Nullable Throwable throwable) {
+                        if (throwable != null) {
+                            Log.e(TAG, "Error loading Font options", throwable);
+                        }
+                        showError();
+                    }
+                },
+                /* reload= */ true);
     }
 
     private FontOption getActiveOption(List<FontOption> options) {
@@ -194,8 +201,9 @@ public class FontFragment extends AppbarFragment {
     }
 
     private void restoreBottomActionBarVisibility(@Nullable Bundle savedInstanceState) {
-        boolean isBottomActionBarVisible = savedInstanceState != null
-                && savedInstanceState.getBoolean(KEY_STATE_BOTTOM_ACTION_BAR_VISIBLE);
+        boolean isBottomActionBarVisible =
+                savedInstanceState != null
+                        && savedInstanceState.getBoolean(KEY_STATE_BOTTOM_ACTION_BAR_VISIBLE);
         if (mBottomActionBar == null) return;
         if (isBottomActionBarVisible) {
             mBottomActionBar.show();

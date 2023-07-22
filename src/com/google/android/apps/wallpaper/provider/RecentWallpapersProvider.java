@@ -23,7 +23,11 @@ public class RecentWallpapersProvider extends ContentProvider {
         if (!"/list_recent".equals(uri.getPath())) {
             return null;
         }
-        MatrixCursor matrixCursor = new MatrixCursor(new String[]{"id", "placeholder_color", "component", "title", "last_updated"});
+        MatrixCursor matrixCursor =
+                new MatrixCursor(
+                        new String[] {
+                            "id", "placeholder_color", "component", "title", "last_updated"
+                        });
         return matrixCursor;
     }
 
